@@ -15,16 +15,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: tag image
+      - name: Echo constructed tag name
+        run: echo "Constructed tag name: $DOCKERHUB_USERNAME/$IMAGE_NAME"
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           IMAGE_NAME: my-image
-      - name: Echo constructed tag name
-        run: echo "Constructed tag name: $DOCKERHUB_USERNAME/$IMAGE_NAME"
       - name: Build and push image to DockerHub
         run: |
           docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME .
           docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          IMAGE_NAME: my-image
 
   test:
     runs-on: ubuntu-latest
